@@ -1,3 +1,4 @@
+# We use this base image because it contains docker
 FROM ghcr.io/opensafely/cohortextractor:latest
 
 COPY requirements.txt /requirements.txt
