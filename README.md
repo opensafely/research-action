@@ -19,7 +19,7 @@ docker run \
 
 where:
 
-* `DOCKER_RO_TOKEN` can be found [here](https://github.com/opensafely/server-instructions/blob/master/docs/Server-side%20how-to.md#log-in-to-docker).
+* `DOCKER_RO_TOKEN` can be found [here](https://github.com/opensafely/server-instructions/blob/master/docs/Server-side%20how-to.md#log-in-to-docker)
 * `GITHUB_TOKEN` is a [GitHub PAT](https://github.com/settings/tokens)
 * `GITHUB_REPOSITORY` is eg `opensafely/risk-factors-research`
 * `GITHUB_REF` is the branch or tag to run against, eg `refs/heads/master`
