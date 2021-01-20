@@ -39,9 +39,10 @@ with open(filename, "wb") as f:
 with zipfile.ZipFile(filename) as f:
     f.extractall()
 
-# The zipfile will contain a directory with the same name as the zipfile, minus the
-# .zip.
-dirname, _ = os.path.splitext(filename)
+    # The zipfile should contain a single directory.
+    dirname = f.namelist()[0]
+    assert all(name.startswith(dirname) for name in f.namelist())
+
 
 for step_name, cmd in (
     ("Checking codelists", ["opensafely", "codelists", "check"]),
