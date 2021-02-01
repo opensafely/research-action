@@ -32,7 +32,7 @@ archive_url = repo.get_archive_link("zipball", os.environ["GITHUB_REF"])
 
 # Download and unzip archive.
 rsp = requests.get(archive_url, stream=True)
-if not rsp.ok or "content-disposition" not in rsp.header:
+if not rsp.ok or "content-disposition" not in rsp.headers:
     print(rsp)
     sys.exit(f"Could not download {archive_url}")
 
