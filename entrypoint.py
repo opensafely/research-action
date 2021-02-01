@@ -27,7 +27,7 @@ subprocess.run(
 # Get URL of archive of git repo using API.
 github = Github(os.environ["GITHUB_TOKEN"])
 repo = github.get_repo(os.environ["GITHUB_REPOSITORY"])
-print(f"Using GITHUB_REF: {GITHUB_REF}")
+print(f"Using GITHUB_REF: {os.environ['GITHUB_REF']}")
 archive_url = repo.get_archive_link("zipball", os.environ["GITHUB_REF"])
 
 # Download and unzip archive.
