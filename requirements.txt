@@ -14,8 +14,6 @@ deprecated==1.2.11
     # via pygithub
 idna==2.10
     # via requests
-opensafely==1.3.2
-    # via -r requirements.in
 pip-tools==5.5.0
     # via -r requirements.in
 pygithub==1.54.1

@@ -27,10 +27,15 @@ subprocess.run(
 # Get URL of archive of git repo using API.
 github = Github(os.environ["GITHUB_TOKEN"])
 repo = github.get_repo(os.environ["GITHUB_REPOSITORY"])
+print(f"Using GITHUB_REF: {GITHUB_REF}")
 archive_url = repo.get_archive_link("zipball", os.environ["GITHUB_REF"])
 
 # Download and unzip archive.
 rsp = requests.get(archive_url, stream=True)
+if not rsp.ok or "content-disposition" not in rsp.header:
+    print(rsp)
+    sys.exit(f"Could not download {archive_url}")
+
 filename = rsp.headers["content-disposition"].split("filename=")[1]
 
 with open(filename, "wb") as f:
