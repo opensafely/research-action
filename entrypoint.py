@@ -50,6 +50,8 @@ cmds = []
 codelists = Path(dirname) / 'codelists'
 if codelists.exists():
     cmds.append(("Checking codelists", ["opensafely", "codelists", "check"]))
+else:
+    print("No codelists directory - skipping codelists tests")
 
 cmds.append(
     ("Running the project", ["opensafely", "run", "run_all", "--continue-on-error"]),
@@ -61,6 +63,6 @@ for step_name, cmd in cmds:
     print("=" * 80)
     print(f">>> {step_name}")
     print()
-    rv = subprocess.run(cmd, cwd=dirname)
+    rv = subprocess.run(cmd, cwd=dirname, env=os.environ)
     if rv.returncode != 0:
         sys.exit(1)
