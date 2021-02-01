@@ -1,4 +1,5 @@
 import os
+from pathlib import Path
 import subprocess
 import sys
 import zipfile
@@ -44,10 +45,17 @@ with zipfile.ZipFile(filename) as f:
     assert all(name.startswith(dirname) for name in f.namelist())
 
 
-for step_name, cmd in (
-    ("Checking codelists", ["opensafely", "codelists", "check"]),
+cmds = []
+
+codelists = Path(dirname) / 'codelists'
+if codelists.exists():
+    cmds.append(("Checking codelists", ["opensafely", "codelists", "check"]))
+
+cmds.append(
     ("Running the project", ["opensafely", "run", "run_all", "--continue-on-error"]),
-):
+)
+
+for step_name, cmd in cmds:
     # Run each test command in turn.  We depend on the commands producing useful output,
     # and returning non-zero if they have failed.
     print("=" * 80)
