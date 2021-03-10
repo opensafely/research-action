@@ -8,22 +8,6 @@ import requests
 from github import Github
 
 
-# Log in to docker (required for running opensafely commands)
-subprocess.run(
-    [
-        "docker",
-        "login",
-        "ghcr.io",
-        "--username",
-        "docker",
-        "--password",
-        os.environ["DOCKER_RO_TOKEN"],
-    ],
-    check=True,
-    stdout=subprocess.DEVNULL,
-    stderr=subprocess.DEVNULL,
-)
-
 # Get URL of archive of git repo using API.
 github = Github(os.environ["GITHUB_TOKEN"])
 repo = github.get_repo(os.environ["GITHUB_REPOSITORY"])
