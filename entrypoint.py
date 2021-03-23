@@ -43,7 +43,7 @@ else:
     print("No codelists directory - skipping codelists tests")
 
 cmds.append(
-    ("Running the project", ["opensafely", "run", "run_all", "--continue-on-error"]),
+    ("Running the project", ["opensafely", "run", "run_all", "--continue-on-error", "--timestamps"]),
 )
 
 for step_name, cmd in cmds:
