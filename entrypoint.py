@@ -8,10 +8,17 @@ import requests
 from github import Github
 
 
+def subprocess_run(args):
+    print(f"    {' '.join(args)}")
+    print()
+    response = subprocess.run(args)
+    if response.returncode != 0:
+        sys.exit(response.returncode)
+
+
 # Get URL of archive of git repo using API.
 github = Github(os.environ["GITHUB_TOKEN"])
 repo = github.get_repo(os.environ["GITHUB_REPOSITORY"])
-print(f"Using GITHUB_REF: {os.environ['GITHUB_REF']}")
 archive_url = repo.get_archive_link("zipball", os.environ["GITHUB_REF"])
 
 # Download and unzip archive.
@@ -33,25 +40,22 @@ with zipfile.ZipFile(filename) as f:
     dirname = f.namelist()[0]
     assert all(name.startswith(dirname) for name in f.namelist())
 
+os.chdir(dirname)
 
-cmds = []
-
-codelists = Path(dirname) / 'codelists'
-if codelists.exists():
-    cmds.append(("Checking codelists", ["opensafely", "codelists", "check"]))
+print(">>> Checking codelists")
+if Path("codelists").exists():
+    subprocess_run(["opensafely", "codelists", "check"])
 else:
-    print("No codelists directory - skipping codelists tests")
+    print("    No codelists directory - skipping codelists tests")
 
-cmds.append(
-    ("Running the project", ["opensafely", "run", "run_all", "--continue-on-error", "--timestamps"]),
+print("\n\n>>> Running the project")
+subprocess_run(
+    [
+        "opensafely",
+        "run",
+        "run_all",
+        "--continue-on-error",
+        "--timestamps",
+        "--format-output-for-github",
+    ]
 )
-
-for step_name, cmd in cmds:
-    # Run each test command in turn.  We depend on the commands producing useful output,
-    # and returning non-zero if they have failed.
-    print("=" * 80)
-    print(f">>> {step_name}")
-    print()
-    rv = subprocess.run(cmd, cwd=dirname, env=os.environ)
-    if rv.returncode != 0:
-        sys.exit(1)
