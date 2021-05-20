@@ -49,4 +49,13 @@ else:
     print("    No codelists directory - skipping codelists tests")
 
 print("\n\n>>> Running the project")
-subprocess_run(["opensafely", "run", "run_all", "--continue-on-error", "--timestamps"])
+subprocess_run(
+    [
+        "opensafely",
+        "run",
+        "run_all",
+        "--continue-on-error",
+        "--timestamps",
+        "--format-output-for-github",
+    ]
+)
