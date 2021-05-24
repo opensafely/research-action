@@ -21,7 +21,7 @@ fi
 curl \
   --silent \
   --header "$auth_header" \
-  -L https://api.github.com/repos/$GITHUB_REPOSITORY/tarball/$GITHUB_SHA \
+  -L "https://api.github.com/repos/$GITHUB_REPOSITORY/tarball/$GITHUB_SHA" \
   | \
   tar --strip-components=1 -xzf -
 
@@ -42,5 +42,28 @@ echo "$long_line"
 echo "${bold}→ Running all project actions${reset}"
 echo "  opensafely run run_all --continue-on-error"
 echo
+success=0
 opensafely run run_all --continue-on-error \
-  --timestamps --format-output-for-github
+  --timestamps --format-output-for-github || success=$?
+
+if test -z "${PUBLISHING_KEY:-}"; then
+    exit $success
+fi
+
+echo
+echo "$long_line"
+echo "${bold}→ Pushing outputs to actions.opensafely.org${reset}"
+echo
+
+key=$(mktemp)
+known_hosts=$(mktemp)
+echo "$PUBLISHING_KEY" > "$key"
+ssh-keyscan actions.opensafely.org >> "$known_hosts" 2>/dev/null
+rsync --recursive --links --times --compress \
+    -e "ssh -i $key -o 'UserKnownHostsFile $known_hosts' -o 'CheckHostIP no'" \
+    output/ "github@actions.opensafely.org:$GITHUB_RUN_ID"
+
+echo "Outputs available to view at ${bold}https://actions.opensafely.org/$GITHUB_RUN_ID/${reset}"
+echo
+
+exit $success
