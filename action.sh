@@ -56,8 +56,12 @@ echo "${bold}→ Pushing outputs to actions.opensafely.org${reset}"
 echo
 
 key=$(mktemp)
+known_hosts=$(mktemp)
 echo "$PUBLISHING_KEY" > "$key"
-rsync --recursive --links --times --compress output/ -e "ssh -i $key" "github@test.opensafely.org:$GITHUB_RUN_ID"
+ssh-keyscan actions.opensafely.org >> "$known_hosts" 2>/dev/null
+rsync --recursive --links --times --compress \
+    -e "ssh -i $key -o 'UserKnownHostsFile $known_hosts' -o 'CheckHostIP no'" \
+    output/ "github@actions.opensafely.org:$GITHUB_RUN_ID"
 
 echo "Outputs available to view at ${bold}https://actions.opensafely.org/$GITHUB_RUN_ID/${reset}"
 echo
