@@ -25,5 +25,12 @@ cd test-tmp
 # Test against a known good commmit of a test project
 export GITHUB_REPOSITORY=opensafely/gh-testing-research
 export GITHUB_SHA=822b04bc718488c4755acd6b6dce8f72f7a7d0d3
-export GITHUB_TOKEN GITHUB_WORKFLOW
+
+GITHUB_RUN_ID="test-$(head -c 128 /dev/urandom | tr -dc 'a-z0-9' | fold -w 8 | head -n 1)"
+
+PUBLISHING_KEY=
+if test -f ~/.ssh/github-action; then
+    PUBLISHING_KEY=$(cat ~/.ssh/github-action)
+fi
+export GITHUB_TOKEN GITHUB_WORKFLOW GITHUB_RUN_ID PUBLISHING_KEY
 exec "$action_path"

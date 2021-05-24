@@ -1,5 +1,13 @@
+name: 'OpenSAFELY CI Action'
+description: 'Run an OpenSAFELY project.yaml as a test'
+inputs:
+  publishing_key:  
+    description: SSH Key to use to publish the outputs
+    required: false
 runs:
   using: "composite"
   steps:
     - run: $GITHUB_ACTION_PATH/action.sh
+      env:
+          PUBLISHING_KEY: ${{ inputs.publishing_key }}
       shell: bash
